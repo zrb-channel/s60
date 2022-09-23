@@ -12,7 +12,16 @@ import (
 	json "github.com/json-iterator/go"
 )
 
+// UserInfo
+// @param ctx
+// @param conf
+// @param info
+// @date 2022-09-24 01:28:12
 func UserInfo(ctx context.Context, conf *s60.Config, info *s60.UserInfoRequest) (*s60.UserInfoData, error) {
+	if err := ctx.Err(); err != nil {
+		return nil, err
+	}
+
 	req := s60.NewBaseRequest()
 	req.SetData(info)
 

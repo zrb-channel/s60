@@ -13,7 +13,16 @@ import (
 	json "github.com/json-iterator/go"
 )
 
+// Login
+// @param ctx
+// @param conf
+// @param bizData
+// @date 2022-09-24 01:26:15
 func Login(ctx context.Context, conf *s60.Config, bizData *s60.LoginRequest) (*s60.UserTokenResponse, error) {
+	if err := ctx.Err(); err != nil {
+		return nil, err
+	}
+
 	req := s60.NewBaseRequest()
 
 	req.SetData(bizData)
