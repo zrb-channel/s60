@@ -3,12 +3,9 @@ package s60
 import (
 	"context"
 	"errors"
+	json "github.com/json-iterator/go"
 	s60 "github.com/zrb-channel/s60/schema"
 	log "github.com/zrb-channel/utils/logger"
-	"io"
-	"net/http"
-
-	json "github.com/json-iterator/go"
 )
 
 type (
@@ -72,21 +69,17 @@ func RegisterNotifyHandlers(handlers NotifyHandlers) {
 	notifyHandlers = handlers
 }
 
-func Notify(ctx context.Context, conf *s60.Config, req *http.Request) error {
+func Notify(ctx context.Context, conf *s60.Config, req []byte) error {
 	if err := ctx.Err(); err != nil {
-		return err
-	}
-	body, err := io.ReadAll(req.Body)
-	if err != nil {
 		return err
 	}
 
 	resp := &s60.BaseResponse{}
-	if err = json.Unmarshal(body, resp); err != nil {
+	if err := json.Unmarshal(req, resp); err != nil {
 		return err
 	}
 
-	if err = resp.PrivateVerify(conf.JtPublicKey); err != nil {
+	if err := resp.PrivateVerify(conf.JtPublicKey); err != nil {
 		log.WithError(err).Error("签名验证失败")
 		return err
 	}
