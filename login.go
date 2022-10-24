@@ -2,6 +2,7 @@ package s60
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -51,7 +52,7 @@ func Login(ctx context.Context, conf *s60.Config, bizData *s60.LoginRequest) (*s
 	if result.Code != http.StatusOK {
 		log.WithData(map[string]any{"addr": loginAddr, "result": result, "body": req, "data": bizData}).Error("响应code不正确")
 
-		return nil, fmt.Errorf("登录失败 msg:%s | desc:%s", result.Msg, result.Desc)
+		return nil, errors.New(result.Desc)
 	}
 
 	data := &s60.BaseResponse{}
